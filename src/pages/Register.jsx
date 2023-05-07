@@ -2,54 +2,62 @@ import { PasswordInput, TextInput } from "@mantine/core";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../redux/api/authApi";
+import { useForm } from "@mantine/form";
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password_confirmation, setPasswordConfirmation] = useState("");
+  // const [name, setName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [password_confirmation, setPasswordConfirmation] = useState("");
 
   const [register] = useRegisterMutation();
   const nav = useNavigate();
-  const registerHandler = async (e) => {
-    try {
-      e.preventDefault();
-      const user = { name, email, password, password_confirmation };
-      const { data } = await register(user);
-      if (data?.success) {
-        nav("/login");
-      }
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    },
+
+    validate: {
+      name: (value) => (value ? null : "Name must have at least 2 letters"),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) =>
+        value.length > 8 ? null : "Password must have at least 8",
+      password_confirmation: (value, values) =>
+        value !== values.password ? "Passwords did not match" : null,
+    },
+  });
   return (
     <div className="flex justify-center items-center h-screen">
       <form
-        onSubmit={registerHandler}
+        onSubmit={form.onSubmit(async (values) => {
+          const { data } = await register(values);
+          if (data?.success) {
+            nav("/login");
+          }
+          console.log(data);
+        })}
         className=" w-96 p-7 flex flex-col shadow-lg gap-10"
       >
         <h2 className="text-2xl text-gray-500 font-semibold">Register</h2>
         <TextInput
-          value={name}
-          onChange={(e) => setName(e.target.value)}
           placeholder="Enter your Name..."
+          {...form.getInputProps("name")}
         />
         <TextInput
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...form.getInputProps("email")}
           placeholder="Enter your Email..."
         />
         <PasswordInput
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your Password..."
+          {...form.getInputProps("password")}
         />
         <PasswordInput
-          value={password_confirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
           placeholder="Confirm Password"
+          {...form.getInputProps("password_confirmation")}
         />
         <div className="text-gray-700 font-medium flex items-center gap-3">
           <p>Already have an account?</p>

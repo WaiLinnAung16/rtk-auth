@@ -1,14 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useLogoutMutation } from "../redux/api/authApi";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const user = useSelector((state) => state.authSlice.user);
   const token = useSelector((state) => state.authSlice.token);
   const [logout] = useLogoutMutation();
+  const nav = useNavigate();
   const logoutHandler = async () => {
     const data = await logout(token);
     console.log(data);
+    nav("/login");
   };
   return (
     <div>
