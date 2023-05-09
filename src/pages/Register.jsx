@@ -1,16 +1,11 @@
-import { PasswordInput, TextInput } from "@mantine/core";
+import { Loader, PasswordInput, TextInput } from "@mantine/core";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../redux/api/authApi";
 import { useForm } from "@mantine/form";
 
 const Register = () => {
-  // const [name, setName] = useState("");
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [password_confirmation, setPasswordConfirmation] = useState("");
-
-  const [register] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
   const nav = useNavigate();
 
   const form = useForm({
@@ -65,8 +60,16 @@ const Register = () => {
             <p className=" cursor-pointer">Login</p>
           </Link>
         </div>
-        <button type="submit" className=" bg-blue-700 text-white px-4 py-1">
-          Sign up
+        <button
+          disabled={isLoading && true}
+          type="submit"
+          className=" bg-blue-700 text-white px-4 py-1"
+        >
+          {isLoading ? (
+            <Loader color="white" size="sm" className="mx-auto" />
+          ) : (
+            "Sign up"
+          )}
         </button>
       </form>
     </div>
