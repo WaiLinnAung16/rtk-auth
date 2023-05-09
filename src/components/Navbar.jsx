@@ -1,17 +1,22 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogoutMutation } from "../redux/api/authApi";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { removeUser } from "../redux/services/authSlice";
 
 const Navbar = () => {
-  const user = useSelector((state) => state.authSlice.user);
-  const token = useSelector((state) => state.authSlice.token);
+  const user = JSON.parse(Cookies.get("user"));
+  const token = Cookies.get("token");
+  const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
   const nav = useNavigate();
   const logoutHandler = async () => {
-    const data = await logout(token);
-    console.log(data);
-    nav("/login");
+    const { data } = await logout(token);
+    dispatch(removeUser());
+    if (data?.success) {
+      nav("/login");
+    }
   };
   return (
     <div>
