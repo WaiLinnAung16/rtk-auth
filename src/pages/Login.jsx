@@ -6,25 +6,10 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../redux/services/authSlice";
 import { useForm } from "@mantine/form";
 const Login = () => {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const nav = useNavigate();
-  // const loginHandler = async (e) => {
-  //   try {
-  //     e.preventDefault();
-  //     const user = { email, password };
-  //     const { data } = await login(user);
-  //     dispatch(addUser({ user: data?.user, token: data?.token }));
-  //     if (data?.success) {
-  //       nav("/");
-  //     }
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+
   const form = useForm({
     initialValues: {
       email: "",
@@ -34,7 +19,7 @@ const Login = () => {
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) =>
-        value.length > 8 ? null : "Password must have at least 8",
+        value.length < 8 ? "Password must have at least 8" : null,
     },
   });
   return (

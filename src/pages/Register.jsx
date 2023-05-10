@@ -30,6 +30,7 @@ const Register = () => {
       <form
         onSubmit={form.onSubmit(async (values) => {
           const { data } = await register(values);
+
           if (data?.success) {
             nav("/login");
           }
